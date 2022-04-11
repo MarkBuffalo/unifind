@@ -12,6 +12,7 @@ import threading
 class Unifind:
     def __init__(self):
         self.options = Options()
+        # This prevents getting spammed with endless geckodriver tabs.
         self.options.headless = True
         self.alarm_sound = "product_alarm.wav"
         self.product_list_file = "product_list.txt"
@@ -21,11 +22,13 @@ class Unifind:
         self.browser = webdriver.Firefox(options=self.options)
 
 
+    # Load the product_list.txt file and assign it to self.product_list.
     def load_product_urls(self):
         with open(self.product_list_file, "r") as f:
             self.product_list = f.read().splitlines()
 
 
+    # The main entry point of the application.
     def check_product_urls(self):
         # So this function repeats itself every X seconds.
         threading.Timer(self.update_interval, self.check_product_urls).start()
@@ -36,11 +39,12 @@ class Unifind:
         for product_url in self.product_list:
             self.check_page(product_url)
 
-
+    #  This functions checks pages to see if any products are in stock.
     def check_page(self, url):
         page = self.browser.get(url)
         try:
             soup = BeautifulSoup(page.page_source)
+            # Close the browser so we don't exhaust computer resources.
             page.close()
 
             if self.is_product_available(soup):
@@ -49,7 +53,7 @@ class Unifind:
         except AttributeError:
             pass
 
-    # This function checks to see if the product is available.
+    # Boolean function used by self.check_page to see if the product is available.
     @staticmethod
     def is_product_available(soup):
         # Single product pages with single packs have a different set of (default) options.
