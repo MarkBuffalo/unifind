@@ -43,11 +43,10 @@ class Unifind:
         url = kwargs.get("url")
         self.browser.get(url)
         soup = BeautifulSoup(self.browser.page_source, "html.parser")
+        title = soup.findAll("h1", {"class":"comProduct__title"})[0].text
 
-        # Close the browser so we don't exhaust computer resources.
-
+        # Check if the product is available given our search conditions.
         if self.is_product_available(soup, **kwargs):
-            title = soup.findAll("h1", {"class":"comProduct__title"})[0].text
             self.open_browser_to_site(url, title)
 
     # Boolean function used by self.check_page to see if the product is available.
