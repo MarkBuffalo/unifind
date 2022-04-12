@@ -67,10 +67,10 @@ class Unifind:
     # This function opens a browser if available.
     def open_browser_to_site(self, url, soup):
         if url not in self.opened_urls:
+            self.opened_urls.append(url)
             print(f"[!] Product {self.get_page_title(soup)} is available @ {url}. Opening window.")
             self.play_alarm()
             webbrowser.get("firefox").open_new_tab(url)
-            self.opened_urls.append(url)
 
     # This function plays a sound before opening the browser.
     def play_alarm(self):
@@ -88,12 +88,8 @@ class Unifind:
 
     # Get the json response from each item.
     def parse_json_element(self, item):
-        url = item.get("url")
-        html_element = item.get("element")
-        key = item.get("key")
-        value = item.get("value")
-        query = item.get("query")
-        self.check_page(url=url, element=html_element, key=key, value=value, query=query)
+        self.check_page(url=item.get("url"), element=item.get("element"), key=item.get("key"),
+                        value=item.get("value"), query=item.get("query"))
 
 
 if __name__ == "__main__":
