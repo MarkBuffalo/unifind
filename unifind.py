@@ -5,7 +5,7 @@ from selenium.webdriver.firefox.options import Options
 from selenium.common.exceptions import TimeoutException
 from bs4 import BeautifulSoup
 from playsound import playsound
-from apscheduler.schedulers.blocking import BlockingScheduler
+import threading
 import webbrowser
 import json
 
@@ -22,14 +22,12 @@ class Unifind:
         self.update_interval = 15
         self.opened_urls = []
         self.browser = webdriver.Firefox(options=self.options)
-        self.schedule = BlockingScheduler()
-        self.schedule.add_job(self.check_product_urls, "interval", seconds=self.update_interval, max_instances=3)
-        self.schedule.start()
         self.json_blob = None
 
 
     # The main entry point of the application.
     def check_product_urls(self):
+        threading.Timer(self.update_interval, self.check_product_urls).start()
         # So this function repeats itself every X seconds.
         try:
             # Reload, in case the user edited the file.
@@ -37,7 +35,6 @@ class Unifind:
 
         # Kill the schedule if the program is murderlized.
         except (KeyboardInterrupt, SystemExit):
-            self.schedule.shutdown()
             self.browser.close()
 
 
@@ -50,27 +47,26 @@ class Unifind:
         # Close the browser so we don't exhaust computer resources.
 
         if self.is_product_available(soup, **kwargs):
-            self.open_browser_to_site(url, soup)
-
-
-    @staticmethod
-    def get_page_title(soup):
-        return soup.findAll("h1", {"class":"comProduct__title"})[0].text
+            title = soup.findAll("h1", {"class":"comProduct__title"})[0].text
+            self.open_browser_to_site(url, title)
 
     # Boolean function used by self.check_page to see if the product is available.
     @staticmethod
     def is_product_available(soup, **kwargs):
-        if not soup.findAll(kwargs.get("element"), {kwargs.get("key"): kwargs.get("value")})[0].text == kwargs.get("query"):
-            return True
+        try:
+            if kwargs.get("query") in soup.findAll(kwargs.get("element"), {kwargs.get("key"): kwargs.get("value")})[0].text:
+                return True
+        except IndexError:
+            pass
         return False
 
     # This function opens a browser if available.
-    def open_browser_to_site(self, url, soup):
+    def open_browser_to_site(self, url, title):
         if url not in self.opened_urls:
             self.opened_urls.append(url)
-            print(f"[!] Product {self.get_page_title(soup)} is available @ {url}. Opening window.")
+            print(f"[!] Product {title} is available @ {url}. Opening window.")
             self.play_alarm()
-            webbrowser.get("firefox").open_new_tab(url)
+            webbrowser.get("chrome").open_new_tab(url)
 
     # This function plays a sound before opening the browser.
     def play_alarm(self):
@@ -95,6 +91,7 @@ class Unifind:
 if __name__ == "__main__":
     try:
         u = Unifind()
+        u.check_product_urls()
     except ConnectionRefusedError:
         pass
     except ConnectionAbortedError:
