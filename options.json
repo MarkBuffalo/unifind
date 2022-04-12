@@ -1,0 +1,31 @@
+[
+            {
+                "url": "https://store.ui.com/collections/surveillance/products/unifi-protect-nvr",
+                "element": "button",
+                "key": "class",
+                "value": "btn btn--full",
+                "query": "Sold Out"
+            },
+            {
+                "url": "https://store.ui.com/collections/unifi-protect/products/unifi-protect-g4-pro-camera",
+                "element": "span",
+                "key": "class",
+                "value": "relatedProducts__item__data__price",
+                "query": "Sold Out"
+            },
+            {
+                "url": "https://store.ui.com/collections/unifi-protect/products/unifi-protect-g4-ptz",
+                "element": "span",
+                "key": "class",
+                "value": "relatedProducts__item__data__price",
+                "query": "Sold Out"
+            },
+            {
+                "url": "https://store.ui.com/collections/unifi-protect-cameras/products/uvc-g4-doorbell",
+                "element": "span",
+                "key": "class",
+                "value": "relatedProducts__item__data__price",
+                "query": "Sold Out"
+            }
+        ]
+
