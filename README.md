@@ -1,3 +1,6 @@
+# Hopelessly broken.
+This is currently borked in the current state. You will have to edit `options.json` to make sure what you're looking for is actually on the page. 
+
 # unifind
 Scans the Ubiquiti site to see if a product is in stock or not. Currently in beta. Requires geckodriver.
 
