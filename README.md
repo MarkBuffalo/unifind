@@ -7,7 +7,7 @@ Scans the Ubiquiti site to see if a product is in stock or not. Currently in bet
 # Install
 
 ```
-    pip install -r requirements.txt
+    pip3 install -r requirements.txt
     pip3 install PyObjC
     brew install geckodriver
 ```
